@@ -1,0 +1,9 @@
+.borde{
+    border: 3px solid #4A148C;
+    height: 400px;
+}
+
+.list-scroll{
+    height: 380px;
+    overflow-y: auto;
+}
