@@ -9,9 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.18",
+    "axios": "^1.6.0",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.11.1",
+    "jwt-decode": "^4.0.0",
+    "next": "13.5.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "13.5.4"
+    "sweetalert2": "^11.7.32"
   },
   "devDependencies": {
     "eslint": "^8",
