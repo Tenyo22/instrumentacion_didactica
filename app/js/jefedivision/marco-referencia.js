@@ -10,6 +10,25 @@ let indicadores = []
 let indicadorMaterias = []
 let allMaterias = []
 
+module.exports.getMarcoReferencia = async () => {
+    try {
+        const result = await fetch(`${API}/marcoreferencia/active`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                const marcoReferencia = await result.json()
+                return { marcoReferencia }
+            }
+        }
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 module.exports.getAtributosEgreso = async (setAtributos) => {
     try {
         const result = await fetch(`${API}/atributos`, {
@@ -110,9 +129,239 @@ module.exports.listarCriterios = (setCriterios, atributo) => {
 }
 
 module.exports.listarIndicadores = (setIndicadores, criterio) => {
-    const filter = indicadores.filter(obj => obj.criterioDesempenio.atributoDesempenio.id === criterio.id)
+    // console.log(criterio)
+    // console.log(indicadores)
+    const filter = indicadores.filter(obj => obj.criterioDesempenio.id === criterio.id)
     // console.log(filter)
     setIndicadores(filter)
+}
+
+module.exports.validateField = (fields, dialog) => {
+
+    const getNestedFieldValue = (object, fieldName) => {
+        const keys = fieldName.split('.');
+        let value = object;
+        for (const key of keys) {
+            if (value && value.hasOwnProperty(key)) {
+                value = value[key];
+            }
+        }
+
+        return value;
+    };
+
+    for (const fieldName in fields) {
+        const value = getNestedFieldValue(fields, fieldName);
+
+        // Validar si el campo está vacío
+        if (value === '') {
+            // console.error(`El campo "${fieldName}" está vacío.`);
+            Swal.fire({
+                icon: 'info',
+                title: 'Por favor, complete todos los campos!',
+                target: document.getElementById(dialog)
+            })
+            // return `El campo "${fieldName}" está vacío.`; // Retorna el mensaje de error
+            return false
+        }
+    }
+    return true
+    // console.log('Todos los campos están llenos. Validación exitosa.');
+}
+
+module.exports.saveMarcoReferencia = async (form) => {
+    // console.log(form)
+    try {
+        const result = await fetch(`${API}/marcoreferencia`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(form)
+        })
+        if (result.ok) {
+            if (result.status === 201) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Marco de referencia creado!',
+                    target: document.getElementById('dialogMR')
+                })
+                return true
+            } else {
+                const mensaje = await result.json()
+                await Swal.fire({
+                    icon: 'info',
+                    title: mensaje.mensaje,
+                    target: document.getElementById('dialogMR')
+                })
+            }
+        } else {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Ocurrio un error!',
+                target: document.getElementById('dialogMR')
+            })
+        }
+    } catch (error) {
+        console.error(error)
+    }
+    return false
+}
+
+module.exports.deleteMarcoReferencia = async (marcoReferencia) => {
+    // console.log(marcoReferencia)
+    try {
+        await fetch(`${API}/marcoreferencia/${marcoReferencia.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports.deleteIndicadores = async (mr) => {
+    try {
+        await fetch(`${API}/indicador/all/${mr.id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+module.exports.deleteCriterios = async (mr) => {
+    try {
+        await fetch(`${API}/criterios/all/${mr.id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports.deleteAtributosEgreso = async (mr) => {
+    try {
+        const result = await fetch(`${API}/atributos/all/${mr.id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports.saveAtributoEgreso = async (mr_id, form, fetchData) => {
+    let data = form
+    data.marcoReferencia.id = mr_id
+    data.status = 'y'
+    // console.log(form)
+    // console.log(data)
+    try {
+        const result = await fetch(`${API}/atributos`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (result.ok) {
+            if (result.status === 201) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Atributo de Egreso Registrado!',
+                    target: document.getElementById('dialogAtributo')
+                })
+                await fetchData()
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports.saveCriterioDesempenio = async (atributo, form, fetchData) => {
+    let data = form
+    data.atributoDesempenio.id = atributo.id
+    data.status = 'y'
+    // console.log(data)
+    try {
+        const result = await fetch(`${API}/criterios`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (result.ok) {
+            if (result.status === 201) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Criterio de Desempeño Agregado!',
+                    target: document.getElementById('dialogCriterio')
+                })
+                await fetchData()
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ocurrio un error',
+                target: document.getElementById('dialogCriterio')
+            })
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports.saveIndicador = async (form, fetchData) => {
+    let data = form
+    data.status = 'y'
+    // console.log(data)
+    try {
+        const result = await fetch(`${API}/indicador`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (result.ok) {
+            if (result.status === 201) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Indicador Asignado!',
+                    target: document.getElementById('dialogIndicador')
+                })
+                await fetchData()
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+
 }
 
 module.exports.listarMaterias = (indicador) => {
