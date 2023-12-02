@@ -69,7 +69,7 @@ const HomeJF = () => {
               <i className='bi bi-tencent-qq'></i>Plan de Estudios
             </Link>
             <Link href={"/jefedivision/marco-referencia"}
-              className='col-md-3 fs-3 btn text-secondary mb-3 mx-2'>
+              className='col-md-3 fs-3 btn btn-outline-info text-primary mb-3 mx-2'>
               <i className='bi bi-card-list'></i>Marco Referencial
             </Link>
             <Link href={"/jefedivision/cacei"}
