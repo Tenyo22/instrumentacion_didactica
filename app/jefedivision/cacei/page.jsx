@@ -1,11 +1,15 @@
 'use client'
 
 import Navbar from '@/app/components/Navbar'
-import { validateToken, validateTokenAPI } from '@/app/js/auth/token';
+import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token';
 import { TablaCacei, createClasificacion, deleteCompetencia, getClasificacion, updateClasificacion } from '@/app/js/jefedivision/cacei';
+import { getPeriodo } from '@/app/js/jefedivision/periodo';
 import React, { useEffect, useState } from 'react'
 
 const cacei = () => {
+
+    const [usuario, setUsuario] = useState('')
+    const [periodo, setPeriodo] = useState('')
     const [form, setForm] = useState({
         id: '0',
         descripcion: '',
@@ -20,9 +24,18 @@ const cacei = () => {
         setCompleted(true)
     }
 
+    const fetchNavbar = async () => {
+        user(setUsuario)
+
+        const { periodoActual } = await getPeriodo()
+        setPeriodo(periodoActual)
+    }
+
     useEffect(() => {
         validateToken()
         validateTokenAPI()
+
+        fetchNavbar()
         fetchData()
     }, [])
 
@@ -44,8 +57,8 @@ const cacei = () => {
             color: competencia.color
         })
     }
-    
-    const handleDelete = async(competencia) => {
+
+    const handleDelete = async (competencia) => {
         await deleteCompetencia(competencia, fetchData)
         clean()
     }
@@ -60,10 +73,10 @@ const cacei = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if(boton.includes("Agregar")){
+        if (boton.includes("Agregar")) {
             await createClasificacion(form, fetchData)
             clean()
-        }else{
+        } else {
             await updateClasificacion(form, fetchData)
             clean()
         }
@@ -72,7 +85,7 @@ const cacei = () => {
 
     return (
         <>
-            <Navbar home={"/jefedivision"} periodo={"2020"} usuario={"Yo"} />
+            <Navbar home={"/jefedivision"} periodo={periodo ? periodo.year : ''} usuario={usuario} />
 
             <section className='container mt-5'>
                 <form onSubmit={handleSubmit} className='container d-flex flex-column'>

@@ -122,7 +122,7 @@ const especialidad = () => {
 
     return (
         <>
-            <Navbar home={"/jefedivision"} periodo={periodo.year} usuario={usuario} />
+            <Navbar home={"/jefedivision"} periodo={periodo ? periodo.year : ''} usuario={usuario} />
             <section className='container mt-5'>
                 <section className='mb-4 d-flex align-items-center justify-content-around'>
                     <h4>Especialidad Actual: {especialidad ? especialidad.nombre_especialidad : ''}</h4>

@@ -59,7 +59,7 @@ const usuario = () => {
 
     return (
         <>
-            <Navbar home={"/jefedivision"} periodo={periodo.year} usuario={usuario} />
+            <Navbar home={"/jefedivision"} periodo={periodo ? periodo.year : ''} usuario={usuario} />
 
             <section className='m-5 mt-5'>
                 <section className='container row'>

@@ -103,7 +103,7 @@ const materias = () => {
 
     return (
         <>
-            <Navbar home={"/jefedivision"} periodo={periodo.year} usuario={usuario} />
+            <Navbar home={"/jefedivision"} periodo={periodo ? periodo.year : ''} usuario={usuario} />
 
             <section className='container mt-5'>
                 <form onSubmit={handleSubmit}>
