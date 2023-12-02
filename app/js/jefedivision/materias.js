@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
 const { TableContainer, Paper, TableHead, Table, TableRow, TableCell, TableBody, TablePagination, TextField } = require("@mui/material")

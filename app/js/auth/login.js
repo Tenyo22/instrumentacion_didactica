@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 const { default: Swal } = require("sweetalert2");
 const { token } = require("./token");
 const { default: apiConfig } = require("../config/apiConfig");
@@ -6,35 +5,44 @@ const { default: apiConfig } = require("../config/apiConfig");
 // const API="http://localhost:8080";
 const API = apiConfig.apiUsuarios;
 
-module.exports.login = (data) => {
+module.exports.login = async (data) => {
 
     if (data.user.trim() === '' || data.password.trim() === '') {
-        Swal.fire("Error!",
+        await Swal.fire("Error!",
             "Ingrese credenciales validas!",
             "error")
         return
     }
     // console.log(data)
 
-
-    axios.post(`${API}/auth/login`, {
+    const request = {
         "usuario": data.user.trim(),
         "password": data.password.trim(),
-        "rol" : "y"
-    }).then(response => {
-        // console.log("respuesta")
-        // console.log(response)
-        if(response.status === 200) {
-            token(response.data.token)
-        }
+        "rol": "y"
+    }
 
-    }).catch((err) => {
-        // console.log(err)
-        if(err.response && err.response.status === 401){
-            Swal.fire("Error!",
-            `${err.response.data.mensaje}`,
-            "error")
+    try {
+        const result = await fetch(`${API}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request)
+        })
+
+        const res = await result.json()
+        if (result.ok) {
+            if (result.status === 200) {
+                // console.log(token)
+                token(res.token)
+            }
+        } else {
+            await Swal.fire({
+                icon: "error",
+                title: res.mensaje,
+            })
         }
-        // console.log(err.response)
-    })
+    } catch (e) {
+        console.error(e)
+    }
 }

@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 const { default: apiConfig } = require("../config/apiConfig");
 
 // const API = "http://localhost:8081"

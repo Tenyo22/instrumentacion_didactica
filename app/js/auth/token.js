@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 const { jwtDecode } = require("jwt-decode");
 const { default: apiConfig } = require("../config/apiConfig");
 
@@ -38,15 +37,24 @@ module.exports.validateToken = () => {
     }
 }
 
-module.exports.validateTokenAPI = async() => {
-    await axios.get(`${API}/periodo/validate-token`, config).then(result => {
-        // console.log(result)
-    }).catch(err => {
-        if (err.response.status === 401) {
-            localStorage.removeItem("token")
+module.exports.validateTokenAPI = async () => {
+    try {
+        const result = await fetch(`${API}/periodo/validate-token`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        })
+        if(result.status === 401) {
+            // console.log(result.status)
+            localStorage.removeItem('token')
             window.location = "/"
-            // console.log(err.response)
-            // console.log('ass')
         }
-    });
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+module.exports.deleteToken = () => {
+    localStorage.removeItem("token")
+    window.location = '/'
 }

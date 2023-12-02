@@ -1,4 +1,3 @@
-const { default: axios } = require("axios");
 const { default: apiConfig } = require("../config/apiConfig");
 const { default: Swal } = require("sweetalert2");
 const { getUsuariosDocentes } = require("./usuarios");
