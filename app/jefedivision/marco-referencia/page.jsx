@@ -3,7 +3,7 @@
 import Navbar from '@/app/components/Navbar'
 import React, { useEffect, useState } from 'react'
 import './marco-referencia.css'
-import { getAllMaterias, getAtributosEgreso, getCriterioDesempenio, getIndicadores, getIndicadoresMaterias, listarCriterios, listarIndicadores, listarMaterias, saveMateriasIndicador } from '@/app/js/jefedivision/marco-referencia'
+import { deleteAtributosEgreso, deleteCriterios, deleteIndicadores, deleteMarcoReferencia, getAllMaterias, getAtributosEgreso, getCriterioDesempenio, getIndicadores, getIndicadoresMaterias, getMarcoReferencia, listarCriterios, listarIndicadores, listarMaterias, saveAtributoEgreso, saveCriterioDesempenio, saveIndicador, saveMarcoReferencia, saveMateriasIndicador, validateField } from '@/app/js/jefedivision/marco-referencia'
 import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { getPeriodo } from '@/app/js/jefedivision/periodo'
@@ -12,6 +12,7 @@ const marcorf = () => {
 
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
+    const [mr, setMr] = useState([])
     const [atributos, setAtributos] = useState([
         // { 'atributo': "lola" },
         // { 'atributo': "lola" },
@@ -44,11 +45,23 @@ const marcorf = () => {
     const [indicadorActivo, setIndicadorActivo] = useState(null)
     const [materias, setMaterias] = useState([])
     const [materiasIndicador, setMateriasIndicador] = useState([])
+
+    // Dialogs
+    const [openMR, setOpenMR] = useState(false)
     const [openAtributo, setOpenAtributo] = useState(false)
     const [openCriterio, setOpenCriterio] = useState(false)
     const [openIndicador, setOpenIndicador] = useState(false)
+
+    // Forms
+    const [formMR, setFormMR] = useState({
+        descripcion: '',
+        year_start: '',
+        status: 'y'
+    })
     const [formAtributo, setFormAtributo] = useState({
-        id_mr: '',
+        marcoReferencia: {
+            id: ''
+        },
         num_atributo: '',
         descripcion: ''
     })
@@ -67,28 +80,34 @@ const marcorf = () => {
         descripcion: ''
     })
 
+    const fetchNavbar = async () => {
+        user(setUsuario)
+        const { periodoActual } = await getPeriodo()
+        setPeriodo(periodoActual ? periodoActual.year : '')
+    }
+
+    const fetchMarcoReferencia = async () => {
+        const { marcoReferencia } = await getMarcoReferencia()
+        setMr(marcoReferencia)
+    }
+
     const fetchData = async () => {
         await getAtributosEgreso(setAtributos)
         await getCriterioDesempenio()
         await getIndicadores()
-        await getAllMaterias()
     }
 
-    const fetchNavbar = async () => {
-        user(setUsuario)
-        const { periodoActual } = await getPeriodo()
-        setPeriodo(periodoActual)
-    }
+    const fetchMaterias = async () => await getAllMaterias()
 
-    const fetchMateriasIndicadores = async () => {
-        await getIndicadoresMaterias()
-    }
+    const fetchMateriasIndicadores = async () => await getIndicadoresMaterias()
 
     useEffect(() => {
         validateToken()
         validateTokenAPI()
 
         fetchNavbar()
+        fetchMarcoReferencia()
+        fetchMaterias()
         fetchMateriasIndicadores()
         fetchData()
     }, [])
@@ -139,12 +158,34 @@ const marcorf = () => {
         // console.log(materia)
     }
 
+    const handleOpenMR = () => setOpenMR(true)
     const handleOpenAtributo = () => setOpenAtributo(true)
     const handleOpenCriterio = () => setOpenCriterio(true)
     const handleOpenIndicador = () => setOpenIndicador(true)
-    const handleCloseAtributo = () => setOpenAtributo(false)
-    const handleCloseCriterio = () => setOpenCriterio(false)
-    const handleCloseIndicador = () => setOpenIndicador(false)
+    const handleCloseMR = () => {
+        cleanFormMR()
+        setOpenMR(false)
+    }
+    const handleCloseAtributo = () => {
+        cleanFormAtributo
+        setOpenAtributo(false)
+    }
+    const handleCloseCriterio = () => {
+        cleanFormCriterio()
+        setOpenCriterio(false)
+    }
+    const handleCloseIndicador = () => {
+        cleanFormIndicador()
+        setOpenIndicador(false)
+    }
+
+    const handleChangeMR = (e) => {
+        const { name, value } = e.target
+        setFormMR(prev => ({
+            ...prev,
+            [name]: value.trimStart().toUpperCase()
+        }))
+    }
 
     const handleChangeAtributo = (e) => {
         const { name, value } = e.target
@@ -170,17 +211,93 @@ const marcorf = () => {
         }))
     }
 
-    const handleSubmitAtributo = (e) => {
-        e.preventDefault()
-    }
-    const handleSubmitCriterio = (e) => {
-        e.preventDefault()
-        console.log(formCriterio)
+    const cleanFormMR = () => {
+        setFormMR({
+            descripcion: '',
+            year_start: '',
+            status: 'y'
+        })
     }
 
-    const handleSubmitIndicador = (e) => {
+    const cleanFormAtributo = () => {
+        setFormAtributo({
+            marcoReferencia: {
+                id: ''
+            },
+            num_atributo: '',
+            descripcion: ''
+        })
+    }
+
+    const cleanFormCriterio = () => {
+        setFormCriterio({
+            atributoDesempenio: {
+                id: ''
+            },
+            no_criterio: '',
+            descripcion: ''
+        })
+    }
+
+    const cleanFormIndicador = () => {
+        setFormIndicador({
+            criterioDesempenio: {
+                id: ''
+            },
+            no_indicador: '',
+            descripcion: ''
+        })
+    }
+
+    const handleSubmitMR = async (e) => {
         e.preventDefault()
-        console.log(formIndicador)
+        // console.log(formMR)
+        const bandera = validateField(formMR, 'dialogMR')
+        if (bandera) {
+            const banderaInsert = await saveMarcoReferencia(formMR)
+            // console.log(banderaInsert)
+            if (banderaInsert) {
+                await deleteMarcoReferencia(mr)
+                await saveMarcoReferencia(formMR)
+                await deleteIndicadores(mr)
+                await deleteCriterios(mr)
+                await deleteAtributosEgreso(mr)
+
+                window.location.reload()
+            }
+        }
+    }
+
+    const handleSubmitAtributo = async (e) => {
+        e.preventDefault()
+        // console.log(formAtributo)
+        const bandera = validateField(formAtributo, 'dialogAtributo')
+        if (bandera) {
+            await saveAtributoEgreso(mr.id, formAtributo, fetchData)
+            handleCloseAtributo()
+        }
+    }
+
+    const handleSubmitCriterio = async (e) => {
+        e.preventDefault()
+        // console.log(formCriterio)
+        const bandera = validateField(formCriterio, 'dialogCriterio')
+        if (bandera) {
+            await saveCriterioDesempenio(atributoActivo, formCriterio, fetchData)
+            handleCloseCriterio()
+            handleAtributo(atributoActivo)
+        }
+    }
+
+    const handleSubmitIndicador = async (e) => {
+        e.preventDefault()
+        // console.log(formIndicador)
+        const bandera = validateField(formIndicador, 'dialogIndicador')
+        if (bandera) {
+            await saveIndicador(formIndicador, fetchData)
+            handleCloseIndicador()
+            handleCriterio(criteriosActivo)
+        }
     }
 
     const handleSave = async () => {
@@ -193,11 +310,49 @@ const marcorf = () => {
 
     return (
         <>
-            <Navbar home={"/jefedivision"} periodo={periodo ? periodo.year : ''} usuario={usuario} />
+            <Navbar home={"/jefedivision"} periodo={periodo} usuario={usuario} />
             <section className='container mt-3 d-flex flex-column mb-5'>
-                <button type='button' className='btn btn-outline-info col-sm-4 fs-5'>
-                    <i className='bi bi-plus-circle-fill me-2'></i>Crear Nuevo Marco de Referencia
-                </button>
+                <section className='d-flex align-items-center justify-content-around'>
+                    <Button variant='outlined' startIcon={<i className='bi bi-plus-circle-fill fs-3' />}
+                        color='secondary' className='col-sm-4 fs-5'
+                        onClick={handleOpenMR}>
+                        Crear Nuevo Marco de Referencia
+                    </Button>
+                    <Dialog open={openMR} onClose={handleCloseMR} id='dialogMR'>
+                        <DialogTitle>Crear Nuevo Marco de Referencia</DialogTitle>
+                        <DialogContent>
+                            <FormControl sx={{ mt: 2, minWidth: 500 }}>
+                                <TextField autoFocus
+                                    margin='dense'
+                                    name='descripcion'
+                                    label='Descripcion'
+                                    type='text'
+                                    variant='outlined'
+                                    value={formMR.descripcion}
+                                    inputProps={{ maxLength: 10, placeholder: 'MR-20XX' }}
+                                    onChange={handleChangeMR} />
+                                <TextField
+                                    margin='dense'
+                                    name='year_start'
+                                    label='Año de inicio'
+                                    type='text'
+                                    variant='outlined'
+                                    value={formMR.year_start}
+                                    inputProps={{ maxLength: 4 }}
+                                    onChange={handleChangeMR}
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(/[^0-9]/g, '')
+                                        handleChangeMR(e)
+                                    }} />
+                            </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseMR}>Cancelar</Button>
+                            <Button onClick={handleSubmitMR}>Guardar</Button>
+                        </DialogActions>
+                    </Dialog>
+                    <h4>Marco de Referencia: {mr ? mr.descripcion : ''}</h4>
+                </section>
 
                 <section className='d-flex justify-content-between mt-3'>
                     <section className='d-flex flex-column col-sm-4 p-2'>
@@ -223,7 +378,7 @@ const marcorf = () => {
                             onClick={handleOpenAtributo}>
                             Agregar Atributo<i className='bi bi-plus-circle-fill ms-1'></i>
                         </Button>
-                        <Dialog open={openAtributo} onClose={handleCloseAtributo} id='dialog'>
+                        <Dialog open={openAtributo} onClose={handleCloseAtributo} id='dialogAtributo'>
                             <DialogTitle>Registro de Atributos</DialogTitle>
                             <DialogContent>
                                 <FormControl sx={{ mt: 2, minWidth: 500 }}>
@@ -234,6 +389,7 @@ const marcorf = () => {
                                         type='text'
                                         variant='outlined'
                                         value={formAtributo.num_atributo}
+                                        inputProps={{ maxLength: 2 }}
                                         onChange={handleChangeAtributo} />
                                     <TextField
                                         margin='dense'
@@ -242,6 +398,7 @@ const marcorf = () => {
                                         type='text'
                                         variant='outlined'
                                         value={formAtributo.descripcion}
+                                        inputProps={{ maxLength: 255 }}
                                         onChange={handleChangeAtributo} />
                                 </FormControl>
                             </DialogContent>
@@ -284,7 +441,7 @@ const marcorf = () => {
                                     onClick={handleOpenCriterio}>
                                     Agregar Criterio<i className='bi bi-plus-circle-fill ms-1'></i>
                                 </Button>
-                                <Dialog open={openCriterio} onClose={handleOpenCriterio} id='dialog'>
+                                <Dialog open={openCriterio} onClose={handleOpenCriterio} id='dialogCriterio'>
                                     <DialogTitle>Registro de Criterios</DialogTitle>
                                     <DialogContent>
                                         <FormControl sx={{ mt: 2, minWidth: 500 }}>
@@ -295,6 +452,7 @@ const marcorf = () => {
                                                 type='text'
                                                 variant='outlined'
                                                 value={formCriterio.no_criterio}
+                                                inputProps={{ maxLength: 5 }}
                                                 onChange={handleChangeCriterio}
                                             />
                                             <TextField
@@ -304,6 +462,7 @@ const marcorf = () => {
                                                 type='text'
                                                 variant='outlined'
                                                 value={formCriterio.descripcion}
+                                                inputProps={{ maxLength: 255 }}
                                                 onChange={handleChangeCriterio}
                                             />
                                         </FormControl>
@@ -352,7 +511,7 @@ const marcorf = () => {
                                     onClick={handleOpenIndicador}>
                                     Agregar Indicador<i className='bi bi-plus-circle-fill ms-1'></i>
                                 </Button>
-                                <Dialog open={openIndicador} onClose={handleOpenIndicador} id='dialog'>
+                                <Dialog open={openIndicador} onClose={handleOpenIndicador} id='dialogIndicador'>
                                     <DialogTitle>Registro de Indicador</DialogTitle>
                                     <DialogContent>
                                         <FormControl sx={{ mt: 2, minWidth: 500 }}>
@@ -363,6 +522,7 @@ const marcorf = () => {
                                                 type='text'
                                                 variant='outlined'
                                                 value={formIndicador.no_indicador}
+                                                inputProps={{ maxLength: 4 }}
                                                 onChange={handleChangeIndicador}
                                             />
                                             <TextField
@@ -372,6 +532,7 @@ const marcorf = () => {
                                                 type='text'
                                                 variant='outlined'
                                                 value={formIndicador.descripcion}
+                                                inputProps={{ maxLength: 255 }}
                                                 onChange={handleChangeIndicador}
                                             />
                                         </FormControl>
