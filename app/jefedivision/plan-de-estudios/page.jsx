@@ -18,13 +18,16 @@ const page = () => {
     // { "plan_estudios": "2020" }
   ])
 
+  const fetchData = async () => await getPlanEstudios(setPlanEstudios)
+
   useEffect(() => {
     validateToken()
     validateTokenAPI()
     // getPeriodo(setPeriodos, setPeriodo)
     // user(setUsuario)
-    getPlanEstudios(setPlanEstudios)
-  }, [setPlanEstudios])
+    // getPlanEstudios(setPlanEstudios)
+    fetchData()
+  }, [])
 
   return (
     <>
