@@ -12,17 +12,7 @@ const Login = () => {
     const HandleSubmit = async(e) => {
         e.preventDefault()
 
-        login({ user, password })
-
-        // console.log(`User: ${user}`)
-        // console.log(`Password: ${password}`)
-        // console.log(`Value: ${value}`)
-        // router.push('jefedivision')
-        // console.log(value)
-        // if (value > 0) {
-        //     window.location = "/jefedivision"
-
-        // }
+        await login({ user, password })
     }
 
     return (
