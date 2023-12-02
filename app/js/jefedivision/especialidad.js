@@ -247,8 +247,8 @@ module.exports.TablaMateriasEspecialidad = ({ rowsPerPageOptions, rowsPerPage, p
                         <TableRow key={row.clave_materia_especialidad} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                             <TableCell component='th' scope="row">{row.nombreMateria}</TableCell>
                             <TableCell component='th' scope="row">{row.clave_materia_especialidad}</TableCell>
-                            <TableCell component='th' scope="row">{row.hp}</TableCell>
                             <TableCell component='th' scope="row">{row.ht}</TableCell>
+                            <TableCell component='th' scope="row">{row.hp}</TableCell>
                             <TableCell component='th' scope="row">{row.cr}</TableCell>
                             <TableCell component='th' scope="row">{row.semestre}</TableCell>
                         </TableRow>
