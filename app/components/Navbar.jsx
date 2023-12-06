@@ -19,15 +19,15 @@ const Navbar = ({ home, periodo, usuario }) => {
             <nav className="navbar navbar-dark " style={{ "backgroundColor": "#6AA84F" }}>
                 <div className="container-fluid d-flex align-items-center justify-context-between">
                     <a className="navbar-brand" href={home} >
-                        <i className=' bi bi-house-fill fs-1 text-black'></i>
+                        <i className='bi bi-house-fill fs-1 text-black'></i>
                     </a>
-                    <div className="flex-grow-1 col-sm-8 text-center">
+                    <div className="col-sm-8 text-center">
                         <h4>
                             Ingenieria en Sistemas Computacionales - Periodo {periodo}
                         </h4>
                     </div>
-                    <h5 className='d-flex align-items-center justify-content-arround '>
-                        {usuario}
+                    <div className='d-flex align-items-center'>
+                        <h5>{usuario}</h5>
                         <div>
                             <IconButton
                                 size='large'
@@ -52,10 +52,11 @@ const Navbar = ({ home, periodo, usuario }) => {
                                 }}
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}>
-                                <MenuItem onClick={handleExit}>Exit</MenuItem>
+                                <MenuItem onClick={handleExit} className='fs-4'><i className='bi bi-box-arrow-left me-2'></i>Exit</MenuItem>
                             </Menu>
                         </div>
-                    </h5>
+                    </div>
+
                 </div>
             </nav>
         </>
