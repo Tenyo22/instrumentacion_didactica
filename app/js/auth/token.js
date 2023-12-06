@@ -31,6 +31,11 @@ module.exports.user = (setUser) => {
     setUser(decodedToken.sub)
 }
 
+module.exports.getId = () => {
+    var decodedToken = jwtDecode(localStorage.getItem("token"))
+    return decodedToken.id
+}
+
 module.exports.validateToken = () => {
     if (token.includes("none")) {
         window.location = "/"
@@ -44,7 +49,7 @@ module.exports.validateTokenAPI = async () => {
                 'Authorization': 'Bearer ' + token,
             },
         })
-        if(result.status === 401) {
+        if (result.status === 401) {
             // console.log(result.status)
             localStorage.removeItem('token')
             window.location = "/"
