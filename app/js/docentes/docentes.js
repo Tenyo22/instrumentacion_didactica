@@ -1,5 +1,6 @@
 const { getId } = require("../auth/token");
 const { default: apiConfig } = require("../config/apiConfig");
+const { getMateriasEspecialidad } = require("../jefedivision/especialidad");
 const { getMaterias } = require("../jefedivision/materias");
 
 const API = apiConfig.apiDocentes
@@ -15,6 +16,24 @@ let tipoEvidencias = []
 module.exports.getAllMaterias = async () => {
     const { materias } = await getMaterias()
     allMaterias = materias
+    const materiasEspecialidad = await getMateriasEspecialidad()
+    materiasEspecialidad.map(mat => {
+        const existeMateria = allMaterias.some(m => m.clave_materia === mat.clave_materia_especialidad)
+        if (!existeMateria) {
+            const obj = {
+                clave_materia: mat.clave_materia_especialidad,
+                nombre_materia: mat.nombreMateria,
+                ht: mat.ht,
+                hp: mat.hp,
+                cr: mat.cr,
+                semestre: mat.semestre,
+                status: mat.status
+            }
+            allMaterias.push(obj)
+        }
+    })
+    return allMaterias
+    console.log(allMaterias)
 }
 
 module.exports.getDocente = async () => {
