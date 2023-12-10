@@ -24,6 +24,7 @@ module.exports.getClasificacionMaterias = async (setCompetencia) => {
 }
 
 module.exports.getMaterias = async () => {
+    materias = []
     const result = await fetch(`${API}/materias`, {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -33,36 +34,12 @@ module.exports.getMaterias = async () => {
     const data = await result.json()
     // console.log(data)
     if (result.ok) {
-        const newData = data.map(({ clave_materia, nombre_materia, ht, hp, cr, semestre }) => ({
-            clave_materia,
-            nombre_materia,
-            ht,
-            hp,
-            cr,
-            semestre
-        }))
         const uniqueData = data.filter(mat => !materias.some(exists => exists.clave_materia === mat.clave_materia))
         materias.push(...uniqueData)
         return { materias }
     }
     // console.log(materias)
 }
-
-// module.exports.getMateriaByClave = async (clave) => {
-//     const result = await fetch(`${API}/materias/${clave}`, {
-//         headers: {
-//             'Authorization': 'Bearer ' + token,
-//             'Content-Type': 'application/json',
-//         },
-//     })
-//     if (result.ok) {
-//         if (result.status === 200) {
-//             const data = await result.json()
-//             // console.log(data)
-//             return { data }
-//         }
-//     }
-// }
 
 module.exports.validateData = (data) => {
     if (data.competencia === '0') {
@@ -147,26 +124,6 @@ module.exports.TablaMaterias = ({ rowsPerPageOptions, rowsPerPage, page, searchT
         { id: 'cr', label: 'CR' },
         { id: 'semestre', label: 'Semestre' }
     ]
-
-    // const rowsPerPageOptions = [5, 10, 25]
-    // let page = 0
-    // let rowsPerPage = 5
-    // let searchText = ''
-
-    // const handleChangePage = (event, newPage) => {
-    //     page = newPage;
-    // };
-
-    // const handleChangeRowsPerPage = (event) => {
-    //     console.log(event.target.value)
-    //     rowsPerPage = parseInt(event.target.value, 10);
-    //     console.log(rowsPerPage)
-    //     page = 0
-    // };
-
-    // const handleSearch = (event) => {
-    //     searchText = event.target.value
-    // }
 
     const filteredData = materias.filter((row) => {
         return (row.nombre_materia.includes(searchText) || row.clave_materia.includes(searchText));
