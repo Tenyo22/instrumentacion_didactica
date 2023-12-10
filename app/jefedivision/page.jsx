@@ -96,8 +96,8 @@ const HomeJF = () => {
               className='col-md-3 fs-3 btn btn-outline-info text-primary mb-3 mx-2'>
               <i className='bi bi-person-fill'></i>Usuarios
             </Link>
-            <Link href={"/jefedivision"}
-              className='col-md-3 fs-3 btn text-secondary mb-3 mx-2'>
+            <Link href={"/jefedivision/avance"}
+              className='col-md-3 fs-3 btn btn-outline-info text-primary mb-3 mx-2'>
               <i className='bi bi-person-wheelchair'></i>Avance
             </Link>
         </section>
