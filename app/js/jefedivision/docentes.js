@@ -3,6 +3,7 @@ const { default: Swal } = require("sweetalert2");
 const { getUsuariosDocentes } = require("./usuarios");
 const { getMaterias } = require("./materias");
 const { TableHead, TableRow, TableCell, Checkbox, TableBody, List, ListItem, ListItemText } = require("@mui/material");
+const { getMateriasEspecialidad } = require("./especialidad");
 
 // const API = "http://localhost:8083"
 const API = apiConfig.apiDocentes
@@ -55,8 +56,27 @@ module.exports.getUsuariosDoc = async (setUsuarios) => {
 }
 
 module.exports.getAllMaterias = async () => {
-    const { materias } = await getMaterias()
+    todasMaterias = []
+    let { materias } = await getMaterias()
     todasMaterias = materias
+    const materiasEspecialidad = await getMateriasEspecialidad()
+    materiasEspecialidad.map(mat => {
+        const existeMateria = todasMaterias.some(m => m.clave_materia === mat.clave_materia_especialidad)
+        if (!existeMateria) {
+            const obj = {
+                clave_materia: mat.clave_materia_especialidad,
+                nombre_materia: mat.nombreMateria,
+                ht: mat.ht,
+                hp: mat.hp,
+                cr: mat.cr,
+                semestre: mat.semestre,
+                status: mat.status
+            }
+            todasMaterias.push(obj)
+        }
+    })
+    // todasMaterias.push(materiasEspecialidad)
+    // console.log(todasMaterias)
 }
 
 module.exports.getMateriasDocentes = async () => {
@@ -116,21 +136,6 @@ module.exports.getMateriasDocente = async (docente) => {
             console.log(dataMateriaDocente)
         }
     }
-    // const data = []
-    // console.log(docente)
-    // console.log(todasMaterias)
-    // todasMateriasDocentes.map(doc => {
-    //     // console.log(doc)
-    //     if(docente.id === doc.id){
-    //         const materiaEncontrada = todasMaterias.find(mat => mat.clave_materia === clave)
-    //         // data.push({
-    //         //     clave: clave,
-    //         //     materia: materiaEncontrada.nombre_materia,
-    //         // })
-    //         // data.push(doc)
-    //     }
-    // })
-    // console.log(data)
 
 }
 
@@ -215,7 +220,7 @@ module.exports.insertMaterias = async (docente, materias, periodo) => {
     // console.log(docente)
     // console.log(materias)
     // console.log(periodo.id_periodo)
-    
+
     for (const mat of materias) {
         const data = {
             "docente": {

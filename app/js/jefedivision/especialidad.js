@@ -138,6 +138,7 @@ module.exports.getMateriasEspecialidad = async () => {
                 const data = await result.json()
                 const uniqueMaterias = data.filter(mat => !materias.some(exists => exists.clave_materia_especialidad === mat.clave_materia_especialidad))
                 materias.push(...uniqueMaterias)
+                return materias
                 // console.log(data)
                 // console.log(materias)
             }
