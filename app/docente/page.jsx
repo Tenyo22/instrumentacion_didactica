@@ -100,7 +100,7 @@ const page = () => {
                                                         </button> */}
                                                         <Link href={{
                                                             pathname: `/docente/evidencia`,
-                                                            query: { name: evidencia.descripcion },
+                                                            query: { name: evidencia.descripcion, mat : materiaActiva.clave },
                                                         }}
                                                             className='list-group-item list-group-item-action text-start ps-5'
                                                         >
