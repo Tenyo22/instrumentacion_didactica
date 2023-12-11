@@ -23,6 +23,7 @@ module.exports.getClasificacion = async () => {
     // console.log(data)
     const uniqueCompetencia = data.filter(compe => !competencia.some(exists => exists.id === compe.id))
     competencia.push(...uniqueCompetencia)
+    return { competencia }
     // console.log(competencia)
 }
 

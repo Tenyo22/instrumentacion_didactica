@@ -41,6 +41,26 @@ module.exports.getMaterias = async () => {
     // console.log(materias)
 }
 
+module.exports.getMateriasByPlanEstudios = async (clave) => {
+    try {
+        const result = await fetch(`${API}/materias/planestudios/${clave}`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                const data = await result.json()
+                // console.log(data)
+                return { data }
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 module.exports.validateData = (data) => {
     if (data.competencia === '0') {
         Swal.fire({
