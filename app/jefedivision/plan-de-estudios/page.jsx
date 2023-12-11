@@ -1,39 +1,47 @@
 'use client'
 
-import { validateToken, validateTokenAPI } from '@/app/js/auth/token';
+import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token';
 import Navbar from '../../components/Navbar'
 import React, { useEffect, useState } from 'react'
-import { getPlanEstudios } from '@/app/js/jefedivision/plan-estudios';
+import { Reticula, getMateriasPlanEstudio, getPlanEstudios } from '@/app/js/jefedivision/plan-estudios';
+import { getPeriodo } from '@/app/js/jefedivision/periodo';
 
 const page = () => {
 
-  const [planestudios, setPlanEstudios] = useState([
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" },
-    // { "plan_estudios": "2020" }
-  ])
+  const [usuario, setUsuario] = useState('')
+  const [periodo, setPeriodo] = useState('')
+  const [planestudios, setPlanEstudios] = useState([])
+  const [bandera, setBandera] = useState(false)
+
+  const fetchNavbar = async () => {
+    user(setUsuario)
+    const { periodoActual } = await getPeriodo()
+    setPeriodo(periodoActual ? periodoActual.year : '')
+  }
 
   const fetchData = async () => await getPlanEstudios(setPlanEstudios)
 
   useEffect(() => {
     validateToken()
     validateTokenAPI()
-    // getPeriodo(setPeriodos, setPeriodo)
-    // user(setUsuario)
-    // getPlanEstudios(setPlanEstudios)
+
+    fetchNavbar()
     fetchData()
   }, [])
 
+  const handleChangePeriodo = async (e) => {
+    setBandera(false)
+    if (e.target.value === '0') return
+
+    await getMateriasPlanEstudio(e.target.value)
+    setBandera(true)
+  }
+
   return (
     <>
-      <Navbar home="/jefedivision" periodo={"periodo"} usuario={"usuario"} />
+      <Navbar home="/jefedivision" periodo={periodo} usuario={usuario} />
 
-      <section className='container mt-5'>
+      {/* <section className='container mt-5'>
 
         <form className='row justify-content-between'>
           <div className='col-8'>
@@ -47,24 +55,27 @@ const page = () => {
             <i className='bi bi-plus-circle-fill'></i> Agregar
           </button>
         </form>
-      </section>
+      </section> */}
 
-      <hr className='mt-5' />
+      {/* <hr className='mt-5' /> */}
 
       <section className='container'>
-        <section className='mt-5 d-flex flex-column'>
+        <section className='mt-3 d-flex flex-column'>
           <div className='col-4'>
             <select className='form-select form-select-lg' aria-label=".form-select-lg example"
-              name='plan-estudios' id='plan-estudios'>
+              name='plan-estudios' id='plan-estudios'
+              onChange={handleChangePeriodo}>
               <option key={0} value={0}>--Seleccione Plan de Estudios--</option>
-              {planestudios.map((plan, index) => (
-                <option key={index} value={plan.clave}>{plan.clave}</option>
+              {planestudios.map(plan => (
+                <option key={plan.clave} value={plan.clave}>{plan.clave}</option>
               ))}
             </select>
           </div>
-
         </section>
 
+        {bandera ? (
+          <Reticula />
+        ) : null}
       </section>
     </>
   )
