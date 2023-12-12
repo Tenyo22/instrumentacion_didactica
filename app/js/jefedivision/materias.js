@@ -1,6 +1,8 @@
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
-const { TableContainer, Paper, TableHead, Table, TableRow, TableCell, TableBody, TablePagination, TextField } = require("@mui/material")
+const { TableContainer, Paper, TableHead, Table, TableRow, TableCell, TableBody, TablePagination, TextField } = require("@mui/material");
+const { getPlanActualEstudios } = require("./plan-estudios");
+const { getMateriasEspecialidad, getMateriasEspecialidadAvance } = require("./especialidad");
 
 
 // const API = "http://localhost:8081"
@@ -23,22 +25,64 @@ module.exports.getClasificacionMaterias = async (setCompetencia) => {
     setCompetencia(data)
 }
 
-module.exports.getMaterias = async () => {
+module.exports.getMaterias = async (planActual) => {
     materias = []
-    const result = await fetch(`${API}/materias`, {
+    // console.log(planActual)
+    const result = await fetch(`${API}/materias?plan=${planActual}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
     })
-    const data = await result.json()
-    // console.log(data)
     if (result.ok) {
+        const data = await result.json()
+        // console.log(data)
         const uniqueData = data.filter(mat => !materias.some(exists => exists.clave_materia === mat.clave_materia))
         materias.push(...uniqueData)
         return { materias }
     }
     // console.log(materias)
+}
+
+module.exports.getMateriasAvance = async (periodo) => {
+    // console.log(planActual)
+    try {
+        const result = await fetch(`${API}/materias/periodo?periodo=${periodo}`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                const listaMaterias = await result.json()
+
+                const { materiasEspecialidad } = await getMateriasEspecialidadAvance()
+                // console.log(materiasEspecialidad)
+                materiasEspecialidad.map(mat => {
+                    const existeMateria = listaMaterias.some(m => m.clave_materia === mat.clave_materia_especialidad)
+                    if (!existeMateria) {
+                        const obj = {
+                            clave_materia: mat.clave_materia_especialidad,
+                            nombre_materia: mat.nombreMateria,
+                            ht: mat.ht,
+                            hp: mat.hp,
+                            cr: mat.cr,
+                            semestre: mat.semestre,
+                            status: mat.status
+                        }
+                        listaMaterias.push(obj)
+                    }
+                })
+                // console.log(listaMaterias)
+                // const uniqueData = data.filter(mat => !materias.some(exists => exists.clave_materia === mat.clave_materia))
+                // materias.push(...uniqueData)
+                return { listaMaterias }
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 module.exports.getMateriasByPlanEstudios = async (clave) => {
@@ -193,4 +237,23 @@ module.exports.TablaMaterias = ({ rowsPerPageOptions, rowsPerPage, page, searchT
         </TableContainer>
     </section>
 
+}
+
+module.exports.deleteMateriasByPlanEstudios = async (plan) => {
+    try {
+        const result = await fetch(`${API}/materias/delete/${plan}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                console.log('success')
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
 }
