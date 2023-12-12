@@ -7,6 +7,7 @@ import { getAllMaterias, getDocentes, getMateriasDocente, getMateriasDocentes, g
 import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token'
 import { getPeriodo } from '@/app/js/jefedivision/periodo'
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, List, ListItem, ListItemText, Menu, MenuItem, Select, TextField } from '@mui/material'
+import { getPlanActualEstudios } from '@/app/js/jefedivision/plan-estudios'
 
 const page = () => {
 
@@ -29,6 +30,7 @@ const page = () => {
     const [materias, setMaterias] = useState([])
     const [materiasSeleccionadas, setMateriasSeleccionadas] = useState([])
     const [filtroMateria, setFiltroMateria] = useState('')
+    const [planActual, setPlanActual] = useState('')
 
     const style = {
         position: 'absolute',
@@ -51,7 +53,7 @@ const page = () => {
 
     const fetchDocentes = async () => await getDocentes(setDocentes)
 
-    const fetchNavbar = async() => {
+    const fetchNavbar = async () => {
         user(setUsuario)
         const { periodoActual } = await getPeriodo()
         setPeriodo(periodoActual)
@@ -63,9 +65,13 @@ const page = () => {
 
         // await getDocentes(setDocentes)
         fetchDocentes()
+        const { planActual } = await getPlanActualEstudios()
+        setPlanActual(planActual)
+
         await getUsuariosDoc(setUsuarios)
         await getMateriasDocentes()
     }
+
     const fetchMaterias = () => {
         const { listaMaterias } = materiasNoAsignadas()
         setMaterias(listaMaterias)
@@ -78,8 +84,8 @@ const page = () => {
 
     const handleDocente = async (docente) => {
         setDocenteActivo(docente)
-        await getAllMaterias()
-        const { materiasDocente } = await getMateriasDocente(docente)
+        await getAllMaterias(planActual)
+        const { materiasDocente } = await getMateriasDocente(docente, periodo.id_periodo)
         setMateriasDocente(materiasDocente)
     }
 
@@ -170,7 +176,7 @@ const page = () => {
 
     const handleAsignar = () => {
         // console.log(materiasSeleccionadas)
-        if(materiasSeleccionadas.length > 0){
+        if (materiasSeleccionadas.length > 0) {
             insertMaterias(docenteActivo, materiasSeleccionadas, periodo)
             cleanMateriasSeleccionadas()
             handleDocente(docenteActivo)
@@ -306,11 +312,11 @@ const page = () => {
                                     <DialogTitle>Materias</DialogTitle>
                                     <DialogContent>
                                         <TextField label="Nombre Materia"
-                                        variant='outlined'
-                                        fullWidth
-                                        value={filtroMateria}
-                                        margin='normal'
-                                        onChange={(e) => setFiltroMateria(e.target.value)}/>
+                                            variant='outlined'
+                                            fullWidth
+                                            value={filtroMateria}
+                                            margin='normal'
+                                            onChange={(e) => setFiltroMateria(e.target.value)} />
                                         <List>
                                             {materiasFiltradas.map(mat => (
                                                 <ListItem key={mat.clave_materia} disablePadding>

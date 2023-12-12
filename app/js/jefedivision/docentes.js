@@ -55,9 +55,9 @@ module.exports.getUsuariosDoc = async (setUsuarios) => {
 
 }
 
-module.exports.getAllMaterias = async () => {
+module.exports.getAllMaterias = async (planActual) => {
     todasMaterias = []
-    let { materias } = await getMaterias()
+    let { materias } = await getMaterias(planActual)
     todasMaterias = materias
     const materiasEspecialidad = await getMateriasEspecialidad()
     materiasEspecialidad.map(mat => {
@@ -76,7 +76,7 @@ module.exports.getAllMaterias = async () => {
         }
     })
     // todasMaterias.push(materiasEspecialidad)
-    // console.log(todasMaterias)
+    console.log(todasMaterias)
 }
 
 module.exports.getMateriasDocentes = async () => {
@@ -104,9 +104,9 @@ module.exports.getMateriasDocentes = async () => {
     }
 }
 
-module.exports.getMateriasDocente = async (docente) => {
-    // console.log(docente)
-    const result = await fetch(`${API}/materiadocente/${docente.id}`, {
+module.exports.getMateriasDocente = async (docente, periodo) => {
+    // console.log(docente, periodo)
+    const result = await fetch(`${API}/materiadocente/${docente.id}?periodo=${periodo}`, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
@@ -265,4 +265,25 @@ module.exports.insertMaterias = async (docente, materias, periodo) => {
         icon: "success",
         title: "Materia(s) Asignada(s)!"
     })
+}
+
+module.exports.deleteMateriasDocentesByPeriodo = async (periodo) => {
+    console.log(periodo)
+    try {
+        const result = await fetch(`${API}/materiadocente/delete/${periodo}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if(result.ok){
+            if(result.status === 200){
+                console.log('Hecho')
+            }
+        }
+    }catch(e){
+        console.error(e)
+    }
+
 }
