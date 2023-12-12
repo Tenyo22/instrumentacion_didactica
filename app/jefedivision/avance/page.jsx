@@ -32,7 +32,6 @@ const avance = () => {
         await getDocentes(setDocentes)
         const { tipoEvidencias } = await getTipoEvidencias()
         setTipoEvidencias(tipoEvidencias)
-        await getAllMaterias()
     }
 
     useEffect(() => {
@@ -47,8 +46,12 @@ const avance = () => {
 
     useEffect(() => {
         const fetchMaterias = async () => {
+            if (periodoSelect !== '') {
+                await getAllMaterias(periodoSelect)
+            }
             if (periodoSelect !== '' && docenteSelect !== '') {
-                await getMateriasDocente(docenteSelect)
+                // console.log(periodoSelect)
+                await getMateriasDocente(docenteSelect, periodoSelect)
                 await getEvidenciasByDocentesAndPeriodo(periodoSelect, docenteSelect)
                 // setEvidencias(materiasEvidencia)
                 const materias = filterMaterias()
