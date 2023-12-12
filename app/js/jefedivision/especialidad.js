@@ -153,6 +153,33 @@ module.exports.getMateriasEspecialidad = async () => {
     }
 }
 
+module.exports.getMateriasEspecialidadAvance = async () => {
+    try {
+        const result = await fetch(`${API}/especialidadmaterias/avance`, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                const materiasEspecialidad = await result.json()
+                // console.log(materiasEspecialidad)
+                return { materiasEspecialidad }
+                // console.log(data)
+                // console.log(materias)
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ocurrio un error!'
+            })
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 module.exports.validateData = async (especialidad) => {
     if (especialidad.clave === '') {
         Swal.fire({
@@ -258,4 +285,21 @@ module.exports.TablaMateriasEspecialidad = ({ rowsPerPageOptions, rowsPerPage, p
             </Table>
         </TableContainer>
     </section>
+}
+
+module.exports.askEspecialidad = async (especialidad) => {
+    const result = await Swal.fire({
+        icon: 'info',
+        title: `La especialidad: <b><i>${especialidad}</i></b> sigue siendo la misma?`,
+        confirmButtonText: 'Si',
+        confirmButtonColor: '#2979FF',
+        showDenyButton: true,
+        denyButtonText: 'Cambiar',
+        denyButtonColor: '#41c300',
+        showCancelButton: true,
+    })
+    if (result.isDenied) return false
+    if (result.isDismissed) return result.dismiss
+
+    return true
 }
