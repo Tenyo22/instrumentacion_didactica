@@ -1,7 +1,7 @@
 const { getId } = require("../auth/token");
 const { default: apiConfig } = require("../config/apiConfig");
-const { getMateriasEspecialidad } = require("../jefedivision/especialidad");
-const { getMaterias } = require("../jefedivision/materias");
+const { getPeriodo } = require("../jefedivision/periodo");
+const { getPlan, getMaterias, getMateriasEspecialidad } = require("./materias");
 
 const API = apiConfig.apiDocentes
 const token = localStorage.getItem("token");
@@ -12,9 +12,17 @@ let allMaterias = []
 let materiasDocente = []
 let materias = []
 let tipoEvidencias = []
+let periodo = []
+let plan = ''
+
+module.exports.getPlanActual = async () => {
+    const { planActual } = await getPlan()
+    plan = planActual
+}
 
 module.exports.getAllMaterias = async () => {
-    const { materias } = await getMaterias()
+    const { materias } = await getMaterias(plan)
+    // console.log(materias)
     allMaterias = materias
     const materiasEspecialidad = await getMateriasEspecialidad()
     materiasEspecialidad.map(mat => {
@@ -34,6 +42,12 @@ module.exports.getAllMaterias = async () => {
     })
     return allMaterias
     console.log(allMaterias)
+}
+
+module.exports.getPeriodoAct = async () => {
+    const { periodoActual } = await getPeriodo()
+    periodo = periodoActual
+    return { periodoActual }
 }
 
 module.exports.getDocente = async () => {
@@ -59,7 +73,7 @@ module.exports.getDocente = async () => {
 
 module.exports.getMateriasDocente = async () => {
     try {
-        const result = await fetch(`${API}/materiadocente/${docente.id}`, {
+        const result = await fetch(`${API}/materiadocente/${docente.id}?periodo=${periodo.id_periodo}`, {
             headers: {
                 "Authorization": "Bearer" + token,
                 "Content-Type": "application/json",

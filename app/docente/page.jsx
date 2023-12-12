@@ -3,8 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
 import { user, validateToken, validateTokenAPI } from '../js/auth/token'
-import { getPeriodo } from '../js/jefedivision/periodo'
-import { filterMaterias, getAllMaterias, getDocente, getMateriasDocente, getTipoEvidencias } from '../js/docentes/docentes'
+import { filterMaterias, getAllMaterias, getDocente, getMateriasDocente, getPeriodoAct, getPlanActual, getTipoEvidencias } from '../js/docentes/docentes'
 import Link from 'next/link'
 
 const page = () => {
@@ -13,18 +12,19 @@ const page = () => {
     const [materias, setMaterias] = useState([])
     const [evidencias, setEvidencias] = useState([])
     const [materiaActiva, setMateriaActiva] = useState(false)
-    const inputRef = useRef(null)
+    // const inputRef = useRef(null)
 
     const fetchNavbar = async () => {
         user(setUsuario)
-        const { periodoActual } = await getPeriodo()
-        setPeriodo(periodoActual ? periodoActual.year : '')
+        const { periodoActual } = await getPeriodoAct()
+        setPeriodo(periodoActual ? periodoActual : '')
     }
 
     const fetchData = async () => {
+        await getPlanActual()
         await getAllMaterias()
         await getDocente()
-        await getMateriasDocente()
+        await getMateriasDocente(periodo)
         const { materiasSemestre } = filterMaterias()
         setMaterias(materiasSemestre)
         const { tipoEvidencias } = await getTipoEvidencias()
@@ -45,13 +45,13 @@ const page = () => {
         // console.log(evidencias)
     }
 
-    const handleClickEvidencia = (evidencia) => {
-        inputRef.current.click()
-        console.log(evidencia)
-        console.log(materiaActiva)
-        const name = usuario + '_' + evidencia.descripcion
-        console.log(name)
-    }
+    // const handleClickEvidencia = (evidencia) => {
+    //     inputRef.current.click()
+    //     console.log(evidencia)
+    //     console.log(materiaActiva)
+    //     const name = usuario + '_' + evidencia.descripcion
+    //     console.log(name)
+    // }
 
     const handleFileChange = event => {
         const file = event.target.files && event.target.files[0]
@@ -69,7 +69,7 @@ const page = () => {
 
     return (
         <>
-            <Navbar home={"/docente"} periodo={periodo} usuario={usuario} />
+            <Navbar home={"/docente"} periodo={periodo.year} usuario={usuario} />
             <section className='container mt-4'>
                 <section className='row'>
                     {Object.entries(materias).map(([semestre, materiasSemestre]) => (
@@ -87,11 +87,11 @@ const page = () => {
                                             {materiaActiva === materia && (
                                                 evidencias.map(evidencia => (
                                                     <div key={evidencia.id}>
-                                                        <input type="file"
+                                                        {/* <input type="file"
                                                             style={{ display: 'none' }}
                                                             ref={inputRef}
                                                             accept='application/pdf'
-                                                            onChange={handleFileChange} />
+                                                            onChange={handleFileChange} /> */}
                                                         {/* <button key={evidencia.id}
                                                             className='list-group-item list-group-item-action text-start ps-5'
                                                             onClick={() => handleClickEvidencia(evidencia)}
@@ -100,7 +100,7 @@ const page = () => {
                                                         </button> */}
                                                         <Link href={{
                                                             pathname: `/docente/evidencia`,
-                                                            query: { name: evidencia.descripcion, mat : materiaActiva.clave },
+                                                            query: { name: evidencia.descripcion, mat: materiaActiva.clave },
                                                         }}
                                                             className='list-group-item list-group-item-action text-start ps-5'
                                                         >
