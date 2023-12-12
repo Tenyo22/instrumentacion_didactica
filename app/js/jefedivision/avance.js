@@ -1,6 +1,6 @@
 const { default: Swal } = require("sweetalert2")
 const { default: apiConfig } = require("../config/apiConfig")
-const { getAllMaterias } = require("../docentes/docentes")
+const { getMateriasAvance } = require("./materias")
 
 const API = apiConfig.apiDocentes
 const token = localStorage.getItem("token")
@@ -9,16 +9,16 @@ let materias = []
 let materiasDoc = []
 let materiasEvidencia = []
 
-module.exports.getAllMaterias = async () => {
+module.exports.getAllMaterias = async (periodo) => {
     materias = []
-    const allMaterias = await getAllMaterias()
-    materias = allMaterias
+    const { listaMaterias } = await getMateriasAvance(periodo)
+    materias = listaMaterias
     // console.log(allMaterias)
 }
 
-module.exports.getMateriasDocente = async (idDoc) => {
+module.exports.getMateriasDocente = async (idDoc, periodo) => {
     try {
-        const result = await fetch(`${API}/materiadocente/${idDoc}`, {
+        const result = await fetch(`${API}/materiadocente/avance/${idDoc}?periodo=${periodo}`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
@@ -81,16 +81,16 @@ module.exports.filterMaterias = () => {
 
     const materiasFiltradas = materiasDoc.map(matObj => {
         const materiaCorresp = indexMateria[matObj.clave_materia];
-
+        
         return {
             id: matObj.id,
-            nombre_materia: materiaCorresp.nombre_materia,
+            nombre_materia: materiaCorresp?.nombre_materia,
             clave: matObj.clave_materia,
-            cr: materiaCorresp.cr,
-            ht: materiaCorresp.ht,
-            hp: materiaCorresp.hp,
-            semestre: materiaCorresp.semestre,
-            status: materiaCorresp.status,
+            cr: materiaCorresp?.cr,
+            ht: materiaCorresp?.ht,
+            hp: materiaCorresp?.hp,
+            semestre: materiaCorresp?.semestre,
+            status: materiaCorresp?.status,
             evidencias: [], // Inicializar un array para contener las evidencias
         };
     });
