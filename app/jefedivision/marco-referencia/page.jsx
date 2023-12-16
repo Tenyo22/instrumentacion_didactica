@@ -86,15 +86,18 @@ const marcorf = () => {
         setPeriodo(periodoActual ? periodoActual.year : '')
     }
 
-    const fetchMarcoReferencia = async () => {
-        const { marcoReferencia } = await getMarcoReferencia()
-        setMr(marcoReferencia)
-    }
-
     const fetchData = async () => {
-        await getAtributosEgreso(setAtributos)
-        await getCriterioDesempenio()
-        await getIndicadores()
+        try{
+            const { marcoReferencia } = await getMarcoReferencia()
+            setMr(marcoReferencia ? marcoReferencia : '')
+            if(marcoReferencia){
+                await getAtributosEgreso(marcoReferencia.id, setAtributos)
+                await getCriterioDesempenio(marcoReferencia.id)
+                await getIndicadores(marcoReferencia.id)
+            }
+        }catch(e){
+            console.error(e)
+        }
     }
 
     const fetchMaterias = async () => await getAllMaterias()
@@ -106,7 +109,6 @@ const marcorf = () => {
         validateTokenAPI()
 
         fetchNavbar()
-        fetchMarcoReferencia()
         fetchMaterias()
         fetchMateriasIndicadores()
         fetchData()
@@ -365,7 +367,7 @@ const marcorf = () => {
                                             className={`list-group-item list-group-item-action ${atr === atributoActivo ? 'active' : ''}`}
                                             key={index}
                                             onClick={() => handleAtributo(atr)}>
-                                            {`${atr.descripcion}`}
+                                            {`${atr.num_atributo}.- ${atr.descripcion}`}
                                         </button>
                                     ))}
                                 </div>
@@ -421,7 +423,7 @@ const marcorf = () => {
                                                     className={`list-group-item list-group-item-action ${crt === criteriosActivo ? 'active' : ''}`}
                                                     key={index}
                                                     onClick={() => handleCriterio(crt)}>
-                                                    {`${crt.descripcion}`}
+                                                    {`${crt.no_criterio}.- ${crt.descripcion}`}
                                                 </button>
                                             ))}
                                         </div>
@@ -490,7 +492,7 @@ const marcorf = () => {
                                                     className={`list-group-item list-group-item-action ${ind === indicadorActivo ? 'active' : ''}`}
                                                     key={index}
                                                     onClick={() => handleIndicador(ind)}>
-                                                    {`${ind.descripcion}`}
+                                                    {`${ind.no_indicador}.- ${ind.descripcion}`}
 
                                                 </button>
                                             ))}

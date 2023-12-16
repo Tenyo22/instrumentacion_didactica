@@ -1,6 +1,7 @@
 const { default: Swal } = require("sweetalert2")
 const { default: apiConfig } = require("../config/apiConfig")
 const { getMaterias } = require("./materias")
+const { getPlanActualEstudios } = require("./plan-estudios")
 
 const API = apiConfig.apiCacei
 const token = localStorage.getItem("token")
@@ -29,9 +30,10 @@ module.exports.getMarcoReferencia = async () => {
     }
 }
 
-module.exports.getAtributosEgreso = async (setAtributos) => {
+module.exports.getAtributosEgreso = async (mr, setAtributos) => {
+    // console.log(mr)
     try {
-        const result = await fetch(`${API}/atributos`, {
+        const result = await fetch(`${API}/atributos?mr=${mr}`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
@@ -51,9 +53,9 @@ module.exports.getAtributosEgreso = async (setAtributos) => {
     }
 }
 
-module.exports.getCriterioDesempenio = async () => {
+module.exports.getCriterioDesempenio = async (mr) => {
     try {
-        const result = await fetch(`${API}/criterios`, {
+        const result = await fetch(`${API}/criterios?mr=${mr}`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
@@ -72,9 +74,9 @@ module.exports.getCriterioDesempenio = async () => {
     }
 }
 
-module.exports.getIndicadores = async () => {
+module.exports.getIndicadores = async (mr) => {
     try {
-        const result = await fetch(`${API}/indicador`, {
+        const result = await fetch(`${API}/indicador?mr=${mr}`, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
@@ -116,7 +118,8 @@ module.exports.getIndicadoresMaterias = async () => {
 }
 
 module.exports.getAllMaterias = async () => {
-    const { materias } = await getMaterias()
+    const {planActual} = await getPlanActualEstudios()
+    const { materias } = await getMaterias(planActual)
     allMaterias = materias
     // console.log(allMaterias)
 }
