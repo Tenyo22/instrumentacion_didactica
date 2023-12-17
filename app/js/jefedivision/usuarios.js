@@ -185,7 +185,7 @@ module.exports.TablaUsuarios = ({ fetchData }) => {
                         // console.log(user),
                         <TableRow key={user.id_usuario} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
                             <TableCell component='th' scope="row" className="text-center">{user.usuario}</TableCell>
-                            <TableCell component='th' scope="row" className="text-center">{user.rol.id_rol === 1 ? 'ADMIN' : 'DOCENTE'}</TableCell>
+                            <TableCell component='th' scope="row" className="text-center">{user.rol.id_rol === 1 ? 'ADMIN' : user.rol.name_rol}</TableCell>
                             <TableCell component='th' scope="row" className="text-center">
                                 <button type='button' className='btn btn-danger ms-2' onClick={() => handleDeleteUsuario(user.id_usuario)}>
                                     <i className="bi bi-trash-fill"></i>
