@@ -250,7 +250,7 @@ module.exports.deleteMateriasByPlanEstudios = async (plan) => {
         })
         if (result.ok) {
             if (result.status === 200) {
-                console.log('success')
+                // console.log('success')
             }
         }
     } catch (e) {

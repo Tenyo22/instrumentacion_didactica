@@ -268,7 +268,7 @@ module.exports.insertMaterias = async (docente, materias, periodo) => {
 }
 
 module.exports.deleteMateriasDocentesByPeriodo = async (periodo) => {
-    console.log(periodo)
+    // console.log(periodo)
     try {
         const result = await fetch(`${API}/materiadocente/delete/${periodo}`, {
             method: 'PUT',
@@ -279,7 +279,7 @@ module.exports.deleteMateriasDocentesByPeriodo = async (periodo) => {
         })
         if(result.ok){
             if(result.status === 200){
-                console.log('Hecho')
+                // console.log('Hecho')
             }
         }
     }catch(e){
