@@ -76,7 +76,7 @@ module.exports.getAllMaterias = async (planActual) => {
         }
     })
     // todasMaterias.push(materiasEspecialidad)
-    console.log(todasMaterias)
+    // console.log(todasMaterias)
 }
 
 module.exports.getMateriasDocentes = async () => {
