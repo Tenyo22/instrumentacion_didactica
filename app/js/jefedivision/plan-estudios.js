@@ -104,7 +104,7 @@ module.exports.askPlanEstudios = async (plan) => {
         return plan
     } else if (result.isDenied) {
         // console.log(result.value)
-        const { value: newPlan } = await Swal.fire({
+        const { isDismissed: result, value: newPlan } = await Swal.fire({
             title: 'Ingrese el nuevo plan de estudios',
             input: 'text',
             inputPlaceholder: 'ISIC-2010-102',
@@ -118,6 +118,7 @@ module.exports.askPlanEstudios = async (plan) => {
                 return inputValue.toUpperCase()
             }
         })
+        if (result) return false
         if (newPlan) {
             // console.log(newPlan)
             return newPlan
