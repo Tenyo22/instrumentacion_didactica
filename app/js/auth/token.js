@@ -20,8 +20,10 @@ module.exports.token = (token) => {
     if (decodedToken.role[0].authority === "ROLE_ADMINISTRADOR") {
         // console.log("Administrador")
         window.location = "/jefedivision"
-    } else {
+    } else if (decodedToken.role[0].authority === "DOCENTE") {
         window.location = "/docente"
+    } else {
+        window.location = "/invitado"
     }
     // localStorage.setItem("token", response.data.token)
 }
