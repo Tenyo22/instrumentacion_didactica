@@ -42,26 +42,27 @@ const materias = () => {
     }
 
     const fetchData = async () => {
+        const { planActual } = await getPlanActualEstudios()
         setCompleted(false)
-        await getMaterias()
+        await getMaterias(planActual)
         setCompleted(true)
     }
 
     useEffect(() => {
-        const fetch = async() => {
+        const fetch = async () => {
 
             validateToken()
             validateTokenAPI()
-            
+
             getClasificacionMaterias(setCompetencia)
-            
+
             user(setUsuario)
             const { periodoActual } = await getPeriodo()
             const { planActual } = await getPlanActualEstudios()
 
             setPeriodo(periodoActual)
             setPlan(planActual)
-   
+
             // getVariable("periodo", setPeriodo)
         }
 
