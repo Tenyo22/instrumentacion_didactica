@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import { getPeriodo } from '../js/jefedivision/periodo';
+import { askPeriodo, createPeriodo, deletePeriodo, getPeriodo } from '../js/jefedivision/periodo';
 import { user, validateToken, validateTokenAPI } from '../js/auth/token';
 import Link from 'next/link';
 import { askPlanEstudios, createPlanEstudio, deletePlanEstudio, getPlanActualEstudios } from '../js/jefedivision/plan-estudios';
@@ -36,7 +36,7 @@ const HomeJF = () => {
       setActive(true)
     }
   }
-  
+
   useEffect(() => {
     fetchNavbar()
     fetchData()
@@ -45,23 +45,40 @@ const HomeJF = () => {
 
   const handleAlert = async () => {
     const { especialidadActual } = await getEspecialidad()
-    const change = await askEspecialidad(especialidadActual.nombre_especialidad)
 
+    // La especialidad sigue siendo la misma?
+    const change = await askEspecialidad(especialidadActual.nombre_especialidad)
     if (change === 'cancel') return
     if (!change) {
       window.location = '/jefedivision/especialidad'
       return
     }
+
+    // El plan de estudios sigue siendo el mismo?
     const newPlan = await askPlanEstudios(plan)
-    if(!newPlan) return
+    if (!newPlan) return
     // console.log(newPlan)
-    console.log(newPlan, especialidadActual.clave)
-    // await deleteMateriasDocentesByPeriodo(periodo.id_periodo)
-    // await deleteMateriasByPlanEstudios(plan)
-    const res = await createPlanEstudio(newPlan)
-    if(!res) return
-    console.log(res)
-    // await deletePlanEstudio(plan)
+
+    // console.log(newPlan, especialidadActual.clave)
+    // console.log(res)
+    const newPeriodo = await askPeriodo()
+    if (!newPeriodo) return
+    // console.log('ss')
+
+    if (plan !== newPlan) {
+      const res = await createPlanEstudio(newPlan)
+      if (!res) return
+      // console.log('distinto plan')
+      await deleteMateriasByPlanEstudios(plan)
+      await deletePlanEstudio(plan)
+    }
+
+    const checkPeriodo = await createPeriodo(newPeriodo, newPlan, especialidadActual.clave)
+    if (!checkPeriodo) return
+    await deletePeriodo(periodo.id_periodo)
+
+    await deleteMateriasDocentesByPeriodo(periodo.id_periodo)
+    location.reload()
   }
 
   return (
