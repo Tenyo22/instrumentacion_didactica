@@ -9,7 +9,7 @@ import { getPeriodo } from '@/app/js/jefedivision/periodo'
 import { Badge, Button, FormControl, InputLabel, Menu, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-const avance = () => {
+const Avance = () => {
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
     const [periodos, setPeriodos] = useState([])
@@ -189,4 +189,4 @@ const avance = () => {
     )
 }
 
-export default avance
+export default Avance
