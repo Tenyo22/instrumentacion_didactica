@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } = require("@mui/material");
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
@@ -5,7 +7,8 @@ const { default: apiConfig } = require("../config/apiConfig");
 // const API = "http://localhost:8081"
 const API = apiConfig.apiMaterias
 
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 let competencia = []
 
 const clearCompetencia = () => {
@@ -129,7 +132,7 @@ module.exports.deleteCompetencia = async (competencia, fetchData) => {
     }
 }
 
-module.exports.TablaCacei = ({ onEditar, onDelete }) => {
+export function TablaCacei({ onEditar, onDelete }) {
     // console.log(competencia)
 
     return <section>

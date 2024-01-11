@@ -1,10 +1,13 @@
+import Cookies from "js-cookie"
+
 const { default: Swal } = require("sweetalert2")
 const { default: apiConfig } = require("../config/apiConfig")
 const { getMaterias } = require("./materias")
 const { getPlanActualEstudios } = require("./plan-estudios")
 
 const API = apiConfig.apiCacei
-const token = localStorage.getItem("token")
+// const token = localStorage.getItem("token")
+const token = Cookies?.get("token") || "none"
 let atributosEgreso = []
 let criterioDesempenio = []
 let indicadores = []
@@ -118,7 +121,7 @@ module.exports.getIndicadoresMaterias = async () => {
 }
 
 module.exports.getAllMaterias = async () => {
-    const {planActual} = await getPlanActualEstudios()
+    const { planActual } = await getPlanActualEstudios()
     const { materias } = await getMaterias(planActual)
     allMaterias = materias
     // console.log(allMaterias)

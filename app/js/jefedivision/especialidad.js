@@ -1,9 +1,12 @@
+import Cookies from "js-cookie"
+
 const { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } = require("@mui/material")
 const { default: apiConfig } = require("../config/apiConfig")
 const { default: Swal } = require("sweetalert2")
 
 const API = apiConfig.apiMaterias
-const token = localStorage.getItem("token")
+// const token = localStorage.getItem("token")
+const token = Cookies?.get("token") || "none"
 
 let materias = []
 
@@ -235,7 +238,7 @@ module.exports.insertMateriaEspecialidad = async (formulario, especialidad, clea
     // console.log(data)
 }
 
-module.exports.TablaMateriasEspecialidad = ({ rowsPerPageOptions, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage }) => {
+export function TablaMateriasEspecialidad({ rowsPerPageOptions, rowsPerPage, page, handleChangePage, handleChangeRowsPerPage }) {
     const columns = [
         { id: 'materia', label: 'Materia' },
         { id: 'clave', label: 'Clave' },

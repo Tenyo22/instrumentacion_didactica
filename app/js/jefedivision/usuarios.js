@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, TablePagination, TableFooter } = require("@mui/material");
 const { useState } = require("react");
 const { default: Swal } = require("sweetalert2");
@@ -5,7 +7,8 @@ const { default: apiConfig } = require("../config/apiConfig");
 
 // const API = "http://localhost:8080"
 const API = apiConfig.apiUsuarios
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let usuarios = []
 
@@ -119,7 +122,7 @@ const clearUsers = () => {
     usuarios = []
 }
 
-module.exports.TablaUsuarios = ({ fetchData }) => {
+export function TablaUsuarios({ fetchData }) {
 
     const rowsPerPageOptions = [3, 5]
     const [page, setPage] = useState(0)

@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
 const { TableContainer, Paper, TableHead, Table, TableRow, TableCell, TableBody, TablePagination, TextField } = require("@mui/material");
@@ -7,7 +9,8 @@ const { getMateriasEspecialidad, getMateriasEspecialidadAvance } = require("./es
 
 // const API = "http://localhost:8081"
 const API = apiConfig.apiMaterias
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let materias = []
 
@@ -178,7 +181,26 @@ module.exports.insertMateria = async (obj, plan, fetchData, clean) => {
     // console.log(data)
 }
 
-module.exports.TablaMaterias = ({ rowsPerPageOptions, rowsPerPage, page, searchText, handleSearch, handleChangePage, handleChangeRowsPerPage }) => {
+module.exports.deleteMateriasByPlanEstudios = async (plan) => {
+    try {
+        const result = await fetch(`${API}/materias/delete/${plan}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+        if (result.ok) {
+            if (result.status === 200) {
+                // console.log('success')
+            }
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export function TablaMaterias({ rowsPerPageOptions, rowsPerPage, page, searchText, handleSearch, handleChangePage, handleChangeRowsPerPage }) {
 
     const columns = [
         { id: 'materia', label: 'Materia' },
@@ -237,23 +259,4 @@ module.exports.TablaMaterias = ({ rowsPerPageOptions, rowsPerPage, page, searchT
         </TableContainer>
     </section>
 
-}
-
-module.exports.deleteMateriasByPlanEstudios = async (plan) => {
-    try {
-        const result = await fetch(`${API}/materias/delete/${plan}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-            },
-        })
-        if (result.ok) {
-            if (result.status === 200) {
-                // console.log('success')
-            }
-        }
-    } catch (e) {
-        console.error(e)
-    }
 }

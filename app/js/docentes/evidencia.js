@@ -1,10 +1,13 @@
+import Cookies from "js-cookie"
+
 const { default: Swal } = require("sweetalert2")
 const { default: apiConfig } = require("../config/apiConfig")
 const { getId } = require("../auth/token")
 const { getPeriodo } = require("../jefedivision/periodo")
 
 const API = apiConfig.apiDocentes
-const token = localStorage.getItem("token")
+// const token = localStorage.getItem("token")
+const token = Cookies?.get("token") || "none"
 
 module.exports.validatePDF = (file) => {
     if (file.type !== 'application/pdf') {

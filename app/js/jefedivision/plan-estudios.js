@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const { Container, Grid, Paper } = require("@mui/material");
 const { default: apiConfig } = require("../config/apiConfig");
 const { getMateriasByPlanEstudios } = require("./materias");
@@ -5,7 +7,8 @@ const { default: Swal } = require("sweetalert2");
 
 // const API = "http://localhost:8081"
 const API = apiConfig.apiMaterias
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let materias = []
 
@@ -54,7 +57,7 @@ module.exports.getMateriasPlanEstudio = async (clave) => {
     console.log(materias)
 }
 
-module.exports.Reticula = () => {
+export function Reticula() {
     return (
         <Grid container spacing={2} className="mt-2">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(semestre => (

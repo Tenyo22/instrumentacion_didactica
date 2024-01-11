@@ -1,7 +1,10 @@
+import Cookies from "js-cookie"
+
 const { default: apiConfig } = require("../config/apiConfig")
 
 const API = apiConfig.apiMaterias
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let materias = []
 

@@ -1,8 +1,11 @@
+import Cookies from "js-cookie";
+
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
 
 const API = apiConfig.apiDocentes
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let evidencias = []
 
@@ -69,8 +72,8 @@ module.exports.createTipoEvidencia = async (evidencia, clean, fetchData) => {
     }
 }
 
-module.exports.deleteTipoEvidencia = async(evidencia, fetchData) => {
-    try{
+module.exports.deleteTipoEvidencia = async (evidencia, fetchData) => {
+    try {
         const result = await fetch(`${API}/evidencias/${evidencia.id}`, {
             method: 'DELETE',
             headers: {
@@ -78,21 +81,21 @@ module.exports.deleteTipoEvidencia = async(evidencia, fetchData) => {
                 'Content-Type': 'application/json',
             },
         })
-        if(result.ok){
-            if(result.status === 200){
+        if (result.ok) {
+            if (result.status === 200) {
                 fetchData()
                 await Swal.fire({
                     icon: 'success',
                     title: 'Tipo de Evidencia eliminada!'
                 })
             }
-        }else{
+        } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Ocurrio un error!',
             })
         }
-    }catch (e) {
+    } catch (e) {
         console.error(e)
     }
 }

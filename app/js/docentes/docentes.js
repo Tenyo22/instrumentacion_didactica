@@ -1,10 +1,13 @@
+import Cookies from "js-cookie";
+
 const { getId } = require("../auth/token");
 const { default: apiConfig } = require("../config/apiConfig");
 const { getPeriodo } = require("../jefedivision/periodo");
 const { getPlan, getMaterias, getMateriasEspecialidad } = require("./materias");
 
 const API = apiConfig.apiDocentes
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let idDocente = 0
 let docente = []

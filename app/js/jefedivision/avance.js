@@ -1,9 +1,13 @@
+import Cookies from "js-cookie"
+
 const { default: Swal } = require("sweetalert2")
 const { default: apiConfig } = require("../config/apiConfig")
 const { getMateriasAvance } = require("./materias")
 
 const API = apiConfig.apiDocentes
-const token = localStorage.getItem("token")
+// const token = localStorage.getItem("token")
+const token = Cookies?.get("token") || "none"
+
 
 let materias = []
 let materiasDoc = []

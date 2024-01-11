@@ -1,9 +1,13 @@
+import Cookies from "js-cookie";
+
 const { default: Swal } = require("sweetalert2");
 const { default: apiConfig } = require("../config/apiConfig");
 
 // const API = "http://localhost:8081"
 const API = apiConfig.apiMaterias
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
+
 
 module.exports.getPeriodo = async () => {
     try {
@@ -67,7 +71,7 @@ module.exports.createPeriodo = async (periodo, plan, especialidad) => {
         },
         "status": "y"
     }
-    
+
     try {
         const result = await fetch(`${API}/periodo`, {
             method: "POST",

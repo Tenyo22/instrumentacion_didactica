@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const { default: apiConfig } = require("../config/apiConfig");
 const { default: Swal } = require("sweetalert2");
 const { getUsuariosDocentes } = require("./usuarios");
@@ -7,7 +9,8 @@ const { getMateriasEspecialidad } = require("./especialidad");
 
 // const API = "http://localhost:8083"
 const API = apiConfig.apiDocentes
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+const token = Cookies?.get("token") || "none"
 
 let docentes = []
 let todasMaterias = [] // Todas las materias que se tienen registradas
@@ -277,12 +280,12 @@ module.exports.deleteMateriasDocentesByPeriodo = async (periodo) => {
                 'Content-Type': 'application/json',
             },
         })
-        if(result.ok){
-            if(result.status === 200){
+        if (result.ok) {
+            if (result.status === 200) {
                 // console.log('Hecho')
             }
         }
-    }catch(e){
+    } catch (e) {
         console.error(e)
     }
 
