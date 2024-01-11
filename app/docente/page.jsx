@@ -6,7 +6,7 @@ import { user, validateToken, validateTokenAPI } from '../js/auth/token'
 import { filterMaterias, getAllMaterias, getDocente, getMateriasDocente, getPeriodoAct, getPlanActual, getTipoEvidencias } from '../js/docentes/docentes'
 import Link from 'next/link'
 
-const page = () => {
+const Page = () => {
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
     const [materias, setMaterias] = useState({})
@@ -91,4 +91,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

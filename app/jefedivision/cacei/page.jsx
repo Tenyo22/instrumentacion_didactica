@@ -6,7 +6,7 @@ import { TablaCacei, createClasificacion, deleteCompetencia, getClasificacion, u
 import { getPeriodo } from '@/app/js/jefedivision/periodo';
 import React, { useEffect, useState } from 'react'
 
-const cacei = () => {
+const Cacei = () => {
 
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
@@ -123,4 +123,4 @@ const cacei = () => {
     )
 }
 
-export default cacei
+export default Cacei

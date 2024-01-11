@@ -7,7 +7,7 @@ import { getPeriodo } from '@/app/js/jefedivision/periodo'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-const especialidad = () => {
+const Especialidad = () => {
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
     const [completed, setCompleted] = useState(false)
@@ -225,4 +225,4 @@ const especialidad = () => {
     )
 }
 
-export default especialidad
+export default Especialidad

@@ -9,7 +9,7 @@ import { getPeriodo } from '@/app/js/jefedivision/periodo'
 import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, List, ListItem, ListItemText, Menu, MenuItem, Select, TextField } from '@mui/material'
 import { getPlanActualEstudios } from '@/app/js/jefedivision/plan-estudios'
 
-const page = () => {
+const Page = () => {
 
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
@@ -350,4 +350,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

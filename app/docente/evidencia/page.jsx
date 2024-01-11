@@ -8,7 +8,7 @@ import { Button, styled } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-const page = () => {
+const Page = () => {
 
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
@@ -182,4 +182,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

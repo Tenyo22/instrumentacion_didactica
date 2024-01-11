@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import './usuarios.css'
 import { getPeriodo } from '@/app/js/jefedivision/periodo'
 
-const usuario = () => {
+const Usuario = () => {
 
     const [form, setForm] = useState({
         usuario: '',
@@ -105,4 +105,4 @@ const usuario = () => {
     )
 }
 
-export default usuario
+export default Usuario

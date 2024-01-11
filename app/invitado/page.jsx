@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Avance from '../components/Avance'
 
-const invitado = () => {
+const Invitado = () => {
     return (
         <>
             <Avance />
@@ -11,4 +11,4 @@ const invitado = () => {
     )
 }
 
-export default invitado
+export default Invitado

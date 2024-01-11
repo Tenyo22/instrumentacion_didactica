@@ -8,7 +8,7 @@ import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { getPeriodo } from '@/app/js/jefedivision/periodo'
 
-const marcorf = () => {
+const Marcorf = () => {
 
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
@@ -614,4 +614,4 @@ const marcorf = () => {
     )
 }
 
-export default marcorf
+export default Marcorf

@@ -1,7 +1,7 @@
 import Avance from '@/app/components/Avance'
 import React from 'react'
 
-const anvace = () => {
+const Page = () => {
     return (
         <>
             <Avance />
@@ -9,4 +9,4 @@ const anvace = () => {
     )
 }
 
-export default anvace
+export default Page

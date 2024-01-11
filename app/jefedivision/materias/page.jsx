@@ -7,7 +7,7 @@ import { user, validateToken, validateTokenAPI } from '@/app/js/auth/token'
 import { getPlanActualEstudios } from '@/app/js/jefedivision/plan-estudios'
 import { getPeriodo } from '@/app/js/jefedivision/periodo'
 
-const materias = () => {
+const Materias = () => {
 
     const [usuario, setUsuario] = useState('')
     const [plan, setPlan] = useState('')
@@ -183,4 +183,4 @@ const materias = () => {
     )
 }
 
-export default materias
+export default Materias

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Reticula, getMateriasPlanEstudio, getPlanEstudios } from '@/app/js/jefedivision/plan-estudios';
 import { getPeriodo } from '@/app/js/jefedivision/periodo';
 
-const page = () => {
+const Page = () => {
 
   const [usuario, setUsuario] = useState('')
   const [periodo, setPeriodo] = useState('')
@@ -81,4 +81,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

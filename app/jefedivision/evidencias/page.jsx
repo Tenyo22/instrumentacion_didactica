@@ -7,7 +7,7 @@ import { getPeriodo } from '@/app/js/jefedivision/periodo'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-const page = () => {
+const Page = () => {
     const [usuario, setUsuario] = useState('')
     const [periodo, setPeriodo] = useState('')
     const [evidencias, setEvidencias] = useState([])
@@ -136,4 +136,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
